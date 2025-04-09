@@ -1,0 +1,38 @@
+import sagemaker
+from sagemaker import get_execution_role
+from sagemaker.estimator import Estimator
+
+session = sagemaker.Session()
+role = get_execution_role()
+
+# Training data
+input_s3 = 's3://norturareviewus/sentiment-model/train/train.txt'
+output_s3 = 's3://norturareviewus/sentiment-model/output'
+
+container = sagemaker.image_uris.retrieve("xgboost", region=session.boto_region_name, version="1.5-1")
+
+xgb = Estimator(
+    image_uri=container,
+    role=role,
+    instance_count=1,
+    instance_type='ml.m5.large',
+    output_path=output_s3,
+    sagemaker_session=session
+)
+
+xgb.set_hyperparameters(
+    objective='binary:logistic',
+    num_round=100,
+    max_depth=5,
+    eta=0.2,
+    gamma=4,
+    min_child_weight=6,
+    subsample=0.7
+)
+
+train_input = sagemaker.inputs.TrainingInput(
+    s3_data=input_s3,
+    content_type='text/csv'
+)
+
+xgb.fit({'train': train_input})
