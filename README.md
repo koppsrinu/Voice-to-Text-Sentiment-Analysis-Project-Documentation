@@ -1,39 +1,63 @@
 # Voice-to-Text-Sentiment-Analysis-Project-Documentation
-This project converts customer feedback audio into text using Amazon Transcribe, and then analyzes the sentiment of the transcribed text using a machine learning model deployed on SageMaker.
-🎧 Upload audio file (glance-136577.mp3) to S3
-Bucket: norturareviewus
-Prefix: nputaudio/
+# 🎙️ Voice-to-Text Sentiment Analysis Project
 
-📝 Start a Transcribe job in ap-south-1
-Output is stored at:
-s3://norturareviewus/nputaudio/output/glance-136577.json
+This project converts audio feedback into text using Amazon Transcribe and then analyzes the sentiment of the transcribed text using an XGBoost model deployed on Amazon SageMaker.
 
-🔍 Extract transcription result from the .json
+## 📂 Project Structure
 
-🧠 Prepare train.txt with data like:
+- `data/`: Contains sample audio files and training datasets.
+- `notebooks/`: Jupyter notebooks demonstrating data preprocessing, model training, and inference.
+- `scripts/`: Python scripts for various stages of the pipeline.
+- `models/`: Saved models and related artifacts.
 
-kotlin
+## 🛠️ Setup Instructions
+
+1. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/koppsrinu/Voice-to-Text-Sentiment-Analysis-Project-Documentation.git
+cd Voice-to-Text-Sentiment-Analysis-Project-Documentation
+pip install -r requirements.txt
+Usage
+Transcribe Audio:
+
+Use the transcribe_audio.py script to transcribe audio files using Amazon Transcribe.
+
+bash
 Copy
 Edit
-I love this product!,1
-Very disappointed,0
-Uploaded to: s3://norturareviewus/sentiment-model/train/train.txt
+python scripts/transcribe_audio.py --file_path data/sample_audio.mp3
+Train the Sentiment Analysis Model:
 
-🚀 Train an XGBoost model in SageMaker using this data
+Utilize the train_model.py script to train the XGBoost model on the provided dataset.
 
-🛰️ Deploy the model as a real-time endpoint
-Endpoint Name: sentiment-analyzer-endpoint
+bash
+Copy
+Edit
+python scripts/train_model.py --train_data data/train.csv
+Perform Sentiment Analysis:
 
-📊 Use the endpoint to predict sentiment from transcribed text.
+After training, use the predict_sentiment.py script to analyze the sentiment of transcribed text.
 
-🧰 Tech Stack
-Amazon S3
+bash
+Copy
+Edit
+python scripts/predict_sentiment.py --text "Your transcribed text here"
+📝 Example
+Here's an example of how to transcribe an audio file and analyze its sentiment:
 
-Amazon Transcribe
+bash
+Copy
+Edit
+# Transcribe the audio file
+python scripts/transcribe_audio.py --file_path data/sample_audio.mp3
 
-Amazon SageMaker
+# The transcribed text will be saved in the 'transcriptions/' directory.
 
-XGBoost
+# Analyze the sentiment of the transcribed text
+python scripts/predict_sentiment.py --text_file transcriptions/sample_audio.txt
+🤝 Contributing
+Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
-Python (boto3, sagemaker SDK)
-
+📄 License
+This project is licensed under the MIT License. See the LICENSE file for details.
